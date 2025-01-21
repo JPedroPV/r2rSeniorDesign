@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Capture</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: black;
+        }
+        video {
+            width: 100%;
+            max-height: 80vh;
+            background: black;
+            object-fit: contain;
+        }
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .photo-button {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid black;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .photo-button:hover {
+            background: lightgray;
+        }
+        .switch-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            color: black;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .switch-button:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+    </style>
+</head>
+<body>
+    <video id="video" autoplay playsinline></video>
+    <button id="switch-camera" class="switch-button">🔄</button>
+    <div class="controls">
+        <button id="take-photo" class="photo-button"></button>
+    </div>
+    <script>
+        let currentStream, useFrontCamera = false;
+        const videoElement = document.getElementById('video');
+        const photoButton = document.getElementById('take-photo');
+
+        async function startCamera() {
+            const constraints = { video: { facingMode: useFrontCamera ? 'user' : 'environment' } };
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = currentStream;
+            } catch (error) {
+                console.error('Camera error:', error);
+            }
+        }
+
+        document.getElementById('switch-camera').addEventListener('click', () => {
+            useFrontCamera = !useFrontCamera;
+            currentStream.getTracks().forEach(track => track.stop());
+            startCamera();
+        });
+
+        photoButton.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            uploadPhoto(canvas.toDataURL('image/jpeg'));
+        });
+
+        function uploadPhoto(dataUrl) {
+            fetch('/upload_photo', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: dataUrl })
+            })
+            .then(response => response.ok ? alert('Photo uploaded!') : alert('Upload failed.'))
+            .catch(error => console.error('Upload error:', error));
+        }
+
+        startCamera();
+    </script>
+</body>
+</html>
