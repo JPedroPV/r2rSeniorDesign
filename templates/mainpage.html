@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px 0;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .content {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>R2R Movers</header>
+    <h2>Live Camera Feed</h2>
+    <img src="{{ url_for('video_feed') }}" style="width: 640px; height: auto; border: 2px solid black;">
+
+    <div class="content">
+        <p>Welcome to the Main Page!</p>
+        <!-- You can add more navigation

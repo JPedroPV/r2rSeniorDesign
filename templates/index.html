@@ -55,13 +55,44 @@
         .switch-button:hover {
             background: rgba(255, 255, 255, 1);
         }
+
+        .top-left-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000; /* makes sure it's above video */
+        }
+
+        .top-left-button button {
+            width: 150px;
+            height: 50px;
+            background: white;
+            border: 2px solid black;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .top-left-button button:hover {
+            background: lightgray;
+        }
+
     </style>
 </head>
-<body>
+<body>    
     <video id="video" autoplay playsinline></video>
     <button id="switch-camera" class="switch-button">🔄</button>
     <div class="controls">
         <button id="take-photo" class="photo-button"></button>
+    </div>
+    <div class="top-left-button">
+        <form action="/mainpage" method="get">
+            <button type="submit">
+            Main Page
+            </button>
+        </form>
     </div>
     <script>
         let currentStream, useFrontCamera = false;
