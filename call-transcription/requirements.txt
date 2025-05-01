@@ -1,0 +1,5 @@
+Flask==3.1.0
+Flask_Cors==5.0.0
+ollama==0.4.8
+torch==2.2.1+cu118
+whisperx==3.3.1
