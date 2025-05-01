@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop MP3/WAV File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f7f7f7;
+        }
+        .drop-container {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+        .drop-container.dragover {
+            background-color: #e0f7fa;
+        }
+        #file-name {
+            margin-top: 20px;
+            color: #333;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="drop-container" id="drop-container">
+    <p>Drag and drop an audio file here</p>
+    <p id="file-name"></p>
+    <button id="submit-button" disabled>Submit</button>
+</div>
+
+<script>
+    const dropContainer = document.getElementById('drop-container');
+    const fileNameDisplay = document.getElementById('file-name');
+    const submitButton = document.getElementById('submit-button');
+    let uploadedFile = null;
+
+    dropContainer.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dropContainer.classList.add('dragover');
+    });
+
+    dropContainer.addEventListener('dragleave', () => {
+        dropContainer.classList.remove('dragover');
+    });
+
+    dropContainer.addEventListener('drop', (event) => {
+        event.preventDefault();
+        dropContainer.classList.remove('dragover');
+
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type === 'audio/mpeg' || file.type === 'audio/wav' || file.name.endsWith('.m4a')) {
+                uploadedFile = file;
+                fileNameDisplay.textContent = `File dropped: ${file.name}`;
+                submitButton.disabled = false;
+            } else {
+                fileNameDisplay.textContent = 'Please drop a valid audio file.';
+            }
+        }
+    });
+
+    submitButton.addEventListener('click', async () => {
+        if (!uploadedFile) return;
+
+        const formData = new FormData();
+        formData.append('file', uploadedFile);
+
+        try {
+            const response = await fetch('http://localhost:5000/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            if (result.success) {
+                fileNameDisplay.textContent = 'File uploaded and transcribed successfully!';
+            } else {
+                fileNameDisplay.textContent = 'Error during transcription.';
+                console.log(result);
+            }
+        } catch (error) {
+            fileNameDisplay.textContent = 'Error: Unable to upload the file.';
+            console.error(error);
+        }
+    });
+</script>
+
+</body>
+</html>
