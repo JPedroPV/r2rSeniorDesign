@@ -1,0 +1,12 @@
+chair
+couch
+dining table
+potted plant
+bed
+dining table
+desk
+tv
+microwave
+mirror
+refrigerator
+vase

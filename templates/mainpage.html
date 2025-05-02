@@ -22,14 +22,62 @@
         .content {
             margin-top: 50px;
         }
+        .image-container {
+            display: flex;
+            flex-direction: column; /* Stack images vertically */
+            gap: 20px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+        .image-container img {
+            max-width: 300px;
+            border: 2px solid black;
+            margin: 0 auto; /* Center images horizontally */
+        }
+        .items-list {
+            margin: 20px auto;
+            text-align: left;
+            max-width: 600px;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .items-list h3 {
+            margin-top: 0;
+        }
+        .items-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .items-list ul li {
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
 
     <header>R2R Movers</header>
-    <h2>Live Camera Feed</h2>
-    <img src="{{ url_for('video_feed') }}" style="width: 640px; height: auto; border: 2px solid black;">
+    <h2>Processed Images</h2>
 
     <div class="content">
-        <p>Welcome to the Main Page!</p>
-        <!-- You can add more navigation
+        <!-- Display the list of items found -->
+        <div class="items-list">
+            <h3>Items Found in Processed Images:</h3>
+            <ul>
+                {% for item, count in items %}
+                    <li>{{ item }}: {{ count }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Display the processed images -->
+        <div class="image-container">
+            {% for image in images %}
+                <img src="{{ image }}" alt="Processed Image">
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>
